@@ -1,59 +1,81 @@
 import { Card, Grid, Pagination, Typography } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import CircularProgress from '@mui/material/CircularProgress';
 import * as api from "../api";
 
 const Dashboard = () => {
   const [pageSize, setpageSize] = useState(9);
-  const [pokemons, setpokemons] = useState();
+  
   const [count, setcount] = useState();
   const [page, setpage] = useState(1);
+  const listInnerRef = useRef();
+  const [prevPage, setPrevPage] = useState(0);
+  const [pokemons, setpokemons] = useState([]);
+  const [wasLastList, setWasLastList] = useState(false);
+  const [loader, setLoader] = useState(true);
 
-  const getPokemons = async () => {
-    try {
-      let sendData = {
-        page: 1,
-        pageSize: pageSize,
-      };
-      // console.log("called")
-      const res = await api.getAllPokemons({ params: sendData });
-      console.log(res);
-      if (res?.data?.success) {
-        // console.log(res)
-        setpokemons(res?.data?.pokemon?.pokemons);
-        setcount(res?.data?.pokemon?.totalPage);
+
+
+useEffect(() => {
+    const getPokemons = async () => {
+        let sendData = {
+            page: page,
+            pageSize: pageSize,
+          };
+          const response = await api.getAllPokemons({ params: sendData });
+      if (!response?.data?.pokemon?.pokemons?.length) {
+        setcount(response.data.pokemon.totalDocumentCount)
+        setWasLastList(true);
+        return;
       }
-    } catch (error) {
-      console.log(error);
+      setPrevPage(page);
+      setpokemons([...pokemons, ...response.data.pokemon.pokemons]);
+    };
+    if (!wasLastList && prevPage !== page) {
+        getPokemons();
     }
-  };
-
-  useEffect(() => {
-    getPokemons();
-  }, []);
-
-  const handlePageChange = async (event, value) => {
-    try {
-      setpage(value);
-      let sendData = {
-        page: value,
-        pageSize: pageSize,
-      };
-      // console.log("called")
-      const res = await api.getAllPokemons({ params: sendData });
-      console.log(res);
-      if (res?.data?.success) {
-        // console.log(res)
-        setpokemons(res?.data?.pokemon?.pokemons);
-        setcount(res?.data?.pokemon?.totalPage);
+  }, [page, wasLastList, prevPage, pokemons]);
+const onScroll = () => {
+        const scrollTop = document.documentElement.scrollTop
+        const scrollHeight = document.documentElement.scrollHeight
+        const clientHeight = document.documentElement.clientHeight
+     
+        if (scrollTop + clientHeight >= scrollHeight) {
+          setpage(page + 1)
+        }
+        const getPokemons = async () => {
+        let sendData = {
+            page: page,
+            pageSize: pageSize,
+          };
+          const response = await api.getAllPokemons({ params: sendData });
+      if (!response?.data?.pokemon?.pokemons?.length) {
+        setcount(response.data.pokemon.totalDocumentCount)
+        setWasLastList(true);
+        return;
       }
-    } catch (error) {
-      console.log(error);
+      setPrevPage(page);
+      setpokemons([...pokemons, ...response.data.pokemon.pokemons]);
+    };
+    if (!wasLastList && prevPage !== page) {
+        
+        getPokemons();
+        
     }
-  };
+    if(pokemons.length === count){
+        setLoader(false)
+    }
+    
+      }
+
+ useEffect(() => {
+        window.addEventListener('scroll', onScroll)
+        return () => window.removeEventListener('scroll', onScroll)
+      }, [pokemons])
 
   return (
     <>
-      <Grid
+     {pokemons?.length!==0 && <Grid
         container
         xs={12}
         spacing={2}
@@ -62,10 +84,14 @@ const Dashboard = () => {
           marginTop: 20,
           padding: 10,
         }}
+        onScroll={onScroll}
+            ref={listInnerRef}
       >
         {pokemons?.map((pokemon) => {
           return (
-            <Grid item xs={4}>
+          
+            <Grid item xs={4} 
+             >
               <Card>
                 <Grid container style={{ justifyContent: "center" }}>
                   <img
@@ -97,18 +123,16 @@ const Dashboard = () => {
                 </Typography>
               </Card>
             </Grid>
+            
           );
         })}
       </Grid>
-
-      <Grid container style={{justifyContent:"center", marginTop: 15}}>
-        <Pagination
-          count={count}
-          variant="outlined"
-          color="success"
-          onChange={handlePageChange}
-        />
-      </Grid>
+    }
+    
+      {loader&&<Grid container style={{ justifyContent: "center" }}>
+        <CircularProgress style={{justifyContent:"center"}}/> 
+      </Grid>}
+      
     </>
   );
 };

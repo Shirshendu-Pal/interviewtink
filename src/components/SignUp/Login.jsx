@@ -19,23 +19,13 @@ import {
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-// import { themeLight, pagesStyles } from "../../SinglePages/styles";
-// import { BASE_URL } from "../../Api/base";
 import * as api from "../api";
-// import { LoginContext } from "../../Context/UserAuth";
-// import { signinUpStyles } from "../signinupStyles";
-// import GoogleIcon from "@mui/icons-material/Google";
-// import PermPhoneMsgIcon from "@mui/icons-material/PermPhoneMsg";
-// import localgreen from "../../Images/localgreen.png";
-// import { navbarStyles } from "../Styles";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { LOGINUSER } from "../../Context/auth.action";
 import { LoadingOutlined } from "@ant-design/icons";
+import Cookies from 'js-cookie';
 
 const Login = () => {
-  /* const { email, setEmail, password, setPassword } = useContext(LoginContext); */
-//   const { authState, authDispatch } = useContext(LoginContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loader, setLoader] = useState(false);
@@ -57,10 +47,12 @@ const Login = () => {
       };
       const res = await api.userLoginApi(sendData);
       if (res?.data?.success) {
+        Cookies.set('userId', res.data.user._id, { expires: 7 })
+        Cookies.set('accessToken', res.data.tokens.access.token, { expires: 7 })
+        Cookies.set('refreshToken', res.data.tokens.refresh.token, { expires: 7 })
         localStorage.setItem('userId',res.data.user._id)
-        // console.log(res.data.tokens.access)
         localStorage.setItem('accessToken',res.data.tokens.access.token)
-        localStorage.setItem('accessToken',res.data.tokens.refresh.token)
+        localStorage.setItem('refreshToken',res.data.tokens.refresh.token)
         navigate("/dashboard");
         toast.success("Login successfully", {
           position: "top-right",
@@ -93,12 +85,10 @@ const Login = () => {
   return (
     <>
       <Grid container lg={12} 
-    //   style={signinUpStyles.backgroundIm}
     style={{
         justifyContent: 'center',
     }}
       >
-        {/* <Grid item xs={7}></Grid> */}
         <Grid item>
           <Card
             style={{
@@ -109,7 +99,6 @@ const Login = () => {
               marginTop: "30%",
             }}
           >
-            {/* <img src={localgreen} style={{ height: 50, width: 250 }} /> */}
             <Grid
               container
               spacing={2}
@@ -155,7 +144,6 @@ const Login = () => {
             >
               <Button
                 variant="contained"
-                // sx={pagesStyles?.button}
                 onClick={() => {
                   userLogin();
                   setLoader(true);

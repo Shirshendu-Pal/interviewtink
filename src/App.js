@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-// import './App.css';
 import Signup from './components/SignUp/Signup';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

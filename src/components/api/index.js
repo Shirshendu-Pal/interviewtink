@@ -1,12 +1,13 @@
 import { BASE_URL } from "./base";
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const API = axios.create({ baseURL: BASE_URL });
 
 API.interceptors.request.use((req) => {
-    if (localStorage.getItem("accessToken")) {
+    if (Cookies.get("accessToken")) {
       req.headers.authorization =
-        localStorage.getItem("accessToken");
+        Cookies.get("accessToken");
     }
     return req;
   });

@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as api from "../api";
 import { signinUpStyles } from "./signupStyles";
-// import store from "../../Images/store.png";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -71,7 +70,6 @@ const Signup = () => {
       <Grid container lg={12}  style={{
         justifyContent: 'center',
       }}>
-        {/* <Grid item xs={7}></Grid> */}
         <Grid item >
           <Card
             style={{
@@ -146,7 +144,6 @@ const Signup = () => {
                 <Grid item>
                   <Button
                     variant="outlined"
-                    // sx={pagesStyles.button}
                     disabled={!name && !password}
                     onClick={() => {
                       userDeRegister();
