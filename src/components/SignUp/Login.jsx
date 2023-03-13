@@ -77,7 +77,7 @@ const Login = () => {
         progress: undefined,
         theme: "colored",
       });
-      console.log(error);
+      // console.log(error);
       setLoader(false);
     }
   };
