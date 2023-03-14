@@ -2,6 +2,7 @@ import { Card, Grid, Pagination, Typography } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
 import * as api from "../api";
+import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const [pageSize, setpageSize] = useState(9);
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const [loader, setLoader] = useState(true);
 
 
+  console.log("access",Cookies.get("accessToken"))
 
 useEffect(() => {
     const getPokemons = async () => {

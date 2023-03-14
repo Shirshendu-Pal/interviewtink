@@ -31,6 +31,10 @@ const Login = () => {
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
   const [pokemon, setpokemon] = useState();
+  const [token, setToken] = useState("")
+  const myHeaders = new Headers()
+
+
 
   
 
@@ -47,12 +51,6 @@ const Login = () => {
       };
       const res = await api.userLoginApi(sendData);
       if (res?.data?.success) {
-        Cookies.set('userId', res.data.user._id, { expires: 7 })
-        Cookies.set('accessToken', res.data.tokens.access.token, { expires: 7 })
-        Cookies.set('refreshToken', res.data.tokens.refresh.token, { expires: 7 })
-        localStorage.setItem('userId',res.data.user._id)
-        localStorage.setItem('accessToken',res.data.tokens.access.token)
-        localStorage.setItem('refreshToken',res.data.tokens.refresh.token)
         navigate("/dashboard");
         toast.success("Login successfully", {
           position: "top-right",

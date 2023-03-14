@@ -5,8 +5,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "./components/SignUp/Login";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Cookies from 'js-cookie';
 
 function App() {
+  
+  // console.log(Cookies.get("accessToken"))
   return (
     <div className="App">
        <ToastContainer
